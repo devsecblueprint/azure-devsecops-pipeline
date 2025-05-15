@@ -1,0 +1,41 @@
+### Manual workflow triggers are built-in to the pipeline
+### No need for the workflow_dispatch trigger like in GitHub Actions
+
+## Specify a runner
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+## Specify the stages of the pipeline
+stages:
+  - stage: Build Docker Image
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'ubuntu-latest'
+        steps:
+          - script: |
+              echo "Building Docker image..."
+              docker build -t awesome-fastapi:$(Build.SourceVersion).
+            displayName: 'Build Docker Image'
+
+  ### Linting and Formatting checks
+  - stage: Linting and Formating checks
+    jobs:
+      - job: Python_Version
+        pool: 
+          vmImage: "ubuntu-latest"
+          steps:
+          stratgy:
+            matrix:
+              python-version: ["3.12.6"]
+
+      - job: Lint_Format 
+        steps:
+        - checkout: self  ## same as -- uses: actions/checkout@v4
+
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '$(python-version)'
+            addToPath: true
+               
