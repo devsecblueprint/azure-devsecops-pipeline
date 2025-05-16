@@ -16,7 +16,7 @@ resource "azuredevops_build_definition" "this_definition" {
     repo_type   = "TfsGit"
     repo_id     = azuredevops_git_repository.this_git_repo.id
     branch_name = azuredevops_git_repository.this_git_repo.default_branch
-    yml_path    = ".github/workflows/main.yml"
+    yml_path    = "azure-pipelins/azure-pipelines.yml"
   }
  
  variable_groups = [
