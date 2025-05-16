@@ -25,7 +25,7 @@ resource "azuredevops_git_repository" "this_git_repo" {
     initialization {
         init_type = "Import"
         source_type = "Git"
-        source_url = "https://github.com/thogue12/python-fastapi.git"
+        source_url = "https://github.com/thogue12/azure-devsecops-pipeline.git"
         # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
     }
   
