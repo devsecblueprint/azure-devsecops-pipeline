@@ -8,18 +8,21 @@ resource "azuredevops_variable_group" "credentials_group" {
 
   variable {
     name  = "AZ_SUBSCRIPTION_ID"
-    value = ""
+    secret_value = "this-is-a-secret-value"
+    is_secret = true
 
   }
   variable {
     name  = "AZ_TENANT_ID"
-    value = ""
+    # secret_value = 
+    # is_secret = true
 
   }
 
   variable {
     name  = "AZ_CLIENT_ID"
-    value = ""
+    # secret_value = 
+    # is_secret = true
 
   }
 
