@@ -6,11 +6,12 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - displayName: 'Checkout repo'
-          - checkout: self  
-
-          - displayName: 'Build Docker Image'
+          - task:
+              checkout: self
+            displayName: 'Checkout repo'
+         
           - script: |
               echo "Building Docker image..."
               docker build -t awesome-fastapi:$(Build.SourceVersion).
+            displayName: 'Build Docker Image'
             
