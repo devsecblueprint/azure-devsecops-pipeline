@@ -6,8 +6,7 @@ stages:
         pool:
           vmImage: ubuntu-latest
         steps:
-          - task:
-              checkout: self
+          - checkout: self
             displayName: 'Checkout repo'
          
           - script: |
