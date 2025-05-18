@@ -1,0 +1,16 @@
+## Specify the stages of the pipeline
+stages:
+  - stage: Build Docker Image
+    jobs:
+      - job: Build
+        pool:
+          vmImage: ubuntu-latest
+        steps:
+          - displayName: 'Checkout repo'
+          - checkout: self  
+
+          - displayName: 'Build Docker Image'
+          - script: |
+              echo "Building Docker image..."
+              docker build -t awesome-fastapi:$(Build.SourceVersion).
+            

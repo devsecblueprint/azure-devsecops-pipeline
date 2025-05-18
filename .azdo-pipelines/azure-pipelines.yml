@@ -1,0 +1,8 @@
+### Manual workflow triggers are built-in to the pipeline
+### No need for the workflow_dispatch trigger like in GitHub Actions
+
+
+
+## This is the main pipeline file
+## This file is used to call all the other templates
+               

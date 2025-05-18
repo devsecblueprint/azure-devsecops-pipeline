@@ -1,0 +1,32 @@
+
+  ### Linting and Formatting checks
+stages:
+  - stage: Linting and Formating checks
+    jobs:
+      - job: Python_Version
+        pool: 
+          vmImage: "ubuntu-latest"
+          steps:
+          stratgy:
+            matrix:
+              python-version: ["3.12.6"]
+
+      - job: Lint_Format 
+        steps:
+        - checkout: self  ## same as -- uses: actions/checkout@v4
+        - task: UsePythonVersion@0
+          inputs:
+            versionSpec: '$(python-version)'
+        
+      - job: Install_Dependencies
+        steps:
+          - script: |
+              echo "Installing dependencies..."
+              python -m pip install --upgrade pip
+              pip install -r requirements.txt
+
+          - script: Run_lint
+              pylint .
+          
+          - script: Run_Black
+              black --check .
