@@ -1,7 +1,7 @@
 
   ### Linting and Formatting checks
 stages:
-  - stage: Linting and Formating checks
+  - stage: Linting_and_Formating_Checks
     jobs:
       - job: Python_Version
         pool: 

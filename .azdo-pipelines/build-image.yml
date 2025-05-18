@@ -1,6 +1,6 @@
 ## Specify the stages of the pipeline
 stages:
-  - stage: Build Docker Image
+  - stage: Build_Docker_Image
     jobs:
       - job: Build
         pool:

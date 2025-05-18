@@ -1,83 +1,87 @@
 
 
 stages:
-  stage: Unit and Security Testing
-  jobs:
-    - job: testing_phase
-      displayName: Run unit test
-      pool:
-        vmImgae: ubuntu-latest
+   - stage: Unit_and_Security_Testing
+     jobs:
+       - job: testing_phase
+         displayName: Run unit test
+         pool:
+           vmImgae: ubuntu-latest
+   
+           steps:
+            - checkout: self
+              displayName: 'Checkout repo'
+   
+            
+            - script: 
+            - bash:  |
+                 echo "installing dependencies..."
+                 pip install -r requirements.txt
+              displayName: 'Install dependencies'
+            
+              
+            - script: 
+               echo "running py tests..."
+               pytest test/
+              displayName: 'Run py tests'
+   
+       - job: trivy_scan
+         displayName: 'Run Trivy security scanner against the image'
+         pool: 
+           vmImage: ubuntu-latest
+           
+           steps:
+             - checkout: self
+               displayName: 'Checkout repo'
+   
+             - script: |
+                 echo "Building Docker image..."
+                 docker build -t awesome-fastapi:$(Build.SourceVersion).
+               displayName: 'Build Docker Image'
+   
+             - task: trivy@2
+               inputs:
+                 version: 'latest'
+                 type: 'image'
+                 image: awesome-fastapi:$(Build.SourceVersion).
+                 severities: 'HIGH, CRITICAL'
+                 reports: 'sarif'
+                 publish: true
+               displayName: 'Run Trivy Vulnerability Scanner'
+               env:
+                 GITHUB_TOKEN: $(GITHUB_TOKEN)
+   
+       - job: owasp_zap_scan
+         pool:
+           vmImage: ubuntu-latest
+         displayName: 'Run OWASP ZAP security scanner'
+         steps:
+           - checkout: self
+             displayName: 'Checkout repo'
+             
+             # Build and Tag Image
+             # Run Docker Image in detached mode
+           - script: |
+               echo "Building Docker image..."
+               docker build -t awesome-fastapi:$(Build.SourceVersion).
+               docker run -d -p 8080:80 awesome-fastapi:$(Build.SourceVersion).
+             displayName: 'Build Docker Image'
+   
+           - script:
+               sleep 30
+             displayName: 'Wait for Docker container to be ready'
+   
+           - script:
+               docker ps
+             displayName: 'Confirm Docker container is running'
 
-        steps:
-         - displayName: 'Checkout repo'
-         - checkout: self
-
-         - displayName: 'Install dependencies'
-         - script: 
-         - bash:  |
-              echo "installing dependencies..."
-              pip install -r requirements.txt
-         
-           displayName: 'Run py tests'
-         - script: 
-            echo "running py tests..."
-            pytest test/
-
-    - job: trivy_scan
-      displayName: 'Run Trivy security scanner against the image'
-      pool: 
-        vmImage: ubuntu-latest
-        
-        steps:
-          - checkout: self
-            displayName: 'Checkout repo'
-
-          - script: |
-              echo "Building Docker image..."
-              docker build -t awesome-fastapi:$(Build.SourceVersion).
-            displayName: 'Build Docker Image'
-
-          - task: trivy@2
-            inputs:
-              version: 'latest'
-              type: 'image'
-              image: awesome-fastapi:$(Build.SourceVersion).
-              severities: 'HIGH, CRITICAL'
-              reports: 'sarif'
-              publish: true
-            displayName: 'Run Trivy Vulnerability Scanner'
-            env:
-              GITHUB_TOKEN: $(GITHUB_TOKEN)
-
-    - job: owasp_zap_scan
-      pool:
-        vmImage: ubuntu-latest
-      displayName: 'Run OWASP ZAP security scanner'
-      steps:
-        - checkout: self
-          displayName: 'Checkout repo'
-          
-          # Build and Tag Image
-          # Run Docker Image in detached mode
-        - script: |
-            echo "Building Docker image..."
-            docker build -t awesome-fastapi:$(Build.SourceVersion).
-            docker run -d -p 8080:80 awesome-fastapi:$(Build.SourceVersion).
-          displayName: 'Build Docker Image'
-
-        - script:
-            sleep 30
-          displayName: 'Wait for Docker container to be ready'
-
-        - script:
-            docker ps
-          displayName: 'Confirm Docker container is running'
-
-        - task: owaspZAP@0
-          inputs:
-            zapCommand: 'scan'
-            zapScanType: 'full'
-            zapImageName: 'awesome-fastapi:$(Build.SourceVersion).'
-            zapFailOnHighAlerts: true
-          displayName: 'Run OWASP ZAP Security Scanner'
-
+           ### work in progress
+           - task: owaspZAP@0
+             inputs:
+               zapCommand: 'scan'
+               zapScanType: 'full'
+               zapImageName: 'awesome-fastapi:$(Build.SourceVersion).'
+               zapFailOnHighAlerts: true
+             displayName: 'Run OWASP ZAP Security Scanner'
+ 
+ 
