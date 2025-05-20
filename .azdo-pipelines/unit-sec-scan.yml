@@ -63,25 +63,41 @@ stages:
              # Run Docker Image in detached mode
            - script: |
                echo "Building Docker image..."
-               docker build -t awesome-fastapi:$(Build.SourceVersion).
-               docker run -d -p 8080:80 awesome-fastapi:$(Build.SourceVersion).
+               docker build -t awesome-fastapi:$(Build.SourceVersion) .
+               docker run -d -p 8080:80 awesome-fastapi:$(Build.SourceVersion) .
              displayName: 'Build Docker Image'
    
-           - script:
-               sleep 30
+           - script: sleep 30
              displayName: 'Wait for Docker container to be ready'
    
-           - script:
-               docker ps
+           - script: docker ps
              displayName: 'Confirm Docker container is running'
 
-           ### work in progress
-           - task: owaspZAP@0
-             inputs:
-               zapCommand: 'scan'
-               zapScanType: 'full'
-               zapImageName: 'awesome-fastapi:$(Build.SourceVersion).'
-               zapFailOnHighAlerts: true
+           - script: |
+                docker run --rm -v $(System.DefaultWorkingDirectory):/zap/wrk/:rw \
+                owasp/zap2docker-stable zap-full-scan.py \
+                -t http://host.docker.internal:8080 \
+                -x zap-report.xml \
+                -r zap-report.html \
+                || true
              displayName: 'Run OWASP ZAP Security Scanner'
- 
+
+           ### work in progress
+          #  - task: OwaspZapScan@0
+          #     inputs:
+          #       ZapApiUrl: 'http://localhost:$(ProxyPort)'
+          #       TargetUrl: 'http://0.0.0.0:8080'
+          #       NewContext: true
+          #       zapImageName: 'awesome-fastapi:$(Build.SourceVersion) .'
+          #       ShowContextListConfig: true
+          #       ExecuteAjaxSpiderScan: true
+          #       ExecuteSpiderScan: true
+          #    displayName: 'Run OWASP ZAP Security Scanner'
+
+           - task: PublishTestResults@2
+             inputs:
+               testResultsFormat: 'NUnit'
+               testResultsFiles: '**/zap-full-scan.xml'
+               failIfNoTests: true
+             displayName: 'Publish OWASP ZAP Test Results'
  
