@@ -14,3 +14,9 @@ variable "org_service_url" {
   type      = string
   sensitive = true
 }
+
+variable "use_yaml"{
+  description = "Bolean to determine if the pipeline should use the trigger defined in the yaml file or not"
+  type        = bool
+  default     = false
+}

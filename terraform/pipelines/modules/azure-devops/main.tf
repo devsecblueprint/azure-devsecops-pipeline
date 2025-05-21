@@ -18,9 +18,23 @@ resource "azuredevops_project" "this_project" {
 
 ### Create a new Git repository
 
-resource "azuredevops_git_repository" "this_git_repo" {
+resource "azuredevops_git_repository" "infra_git_repo" {
     project_id = azuredevops_project.this_project.id
-    name = "FastAPi-Test"
+    name = "Infra-Test"
+
+    initialization {
+        init_type = "Import"
+        source_type = "Git"
+        source_url = "https://github.com/thogue12/azure-devsecops-pipeline.git"
+        # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
+    }
+  
+}
+
+### Create a new Git repository for FastAPI
+resource "azuredevops_git_repository" "fast_api_git_repo" {
+    project_id = azuredevops_project.this_project.id
+    name = "FastAPI-Test"
 
     initialization {
         init_type = "Import"
