@@ -7,16 +7,16 @@ stages:
   - stage: build_image
     displayName: 'Build Docker Image'
     jobs:
-      - template: pipeline_templates/build-image.yml
+      - template: ".azdo-pipelines/pipeline_templates/build-image.yml"
 
   - stage: lint-formating
     displayName: 'Lint and Format'
     jobs:
-      - template: pipeline_templates/lint-format.yml
+      - template: ".azdo-pipelines/pipeline_templates/linting.yml"
 
   - stage: unit_and_security_testing
     displayName: 'Unit security testing'
     jobs:
-      - template: pipeline_templates/unit-sec-scan.yml
+      - template: ".azdo-pipelines/pipeline_templates/unit-sec-scan.yml"
 
                
