@@ -40,6 +40,7 @@ resource "azurerm_kubernetes_cluster" "this_aks_cluster" {
   name                = var.aks_name
   location            = var.resource_group_name
   resource_group_name = var.location
+  dns_prefix          = "DevSecOps-Blueprint"
 
 
   default_node_pool {
