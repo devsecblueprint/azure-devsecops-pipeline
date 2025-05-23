@@ -4,7 +4,7 @@ stages:
    - stage: Unit_and_Security_Testing
      jobs:
        - job: testing_phase
-         displayName: Run unit test
+         displayName: 'Run unit test'
          pool:
            vmImgae: ubuntu-latest
    

@@ -1,3 +1,18 @@
+/*
+ Make these into variable groups in Azure DevOps
+variables:
+  Container registry service connection established during pipeline creation
+
+  dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
+
+  imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
+
+  containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
+
+  dockerfilePath: '{{ dockerfilePath }}'
+
+  tag: '$(Build.BuildId)'
+*/
 
 
 resource "azuredevops_variable_group" "credentials_group" {
@@ -7,13 +22,13 @@ resource "azuredevops_variable_group" "credentials_group" {
   allow_access = true
 
   variable {
-    name  = "AZ_SUBSCRIPTION_ID"
+    name  = "imageRepository"
     secret_value = "this-is-a-secret-value"
     is_secret = true
 
   }
   variable {
-    name  = "AZ_TENANT_ID"
+    name  = "containerRegistry"
     # secret_value = 
     # is_secret = true
 
@@ -29,19 +44,19 @@ resource "azuredevops_variable_group" "credentials_group" {
 }
 
 
-resource "azuredevops_variable_group" "backend_group" {
+resource "azuredevops_variable_group" "image_repo_variable" {
   project_id   = azuredevops_project.this_project.id
-  name         = "Backend Azure variables"
+  name         = "Image Repository Variables"
   description  = "Managed by Terraform"
   allow_access = true
 
   variable {
-    name  = "AZ_RESOURCE_GROUP"
+    name  = "imageRepository"
     value = ""
 
   }
   variable {
-    name  = "AZ_STORAGE_ACCOUNT"
+    name  = "containerRegistry"
     value = ""
 
   }

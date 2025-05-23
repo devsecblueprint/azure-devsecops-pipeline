@@ -88,8 +88,19 @@ resource "azuredevops_build_definition" "this_definition" {
 
 
 
+### Create Service Connection to Azure Container Registry ###
 
+resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
+  project_id                             = azuredevops_project.this_project.id
+  resource_group                         = var.resource_group_name
+  service_endpoint_name                  = "AzureCR Endpoint"
+  service_endpoint_authentication_scheme = "WorkloadIdentityFederation"
+  azurecr_spn_tenantid                   = "233318cd-0fbb-44eb-9437-4e2681adf87e"
+  azurecr_name                           = var.acr_name
+  azurecr_subscription_id                = "9e3af6ab-6e22-4d23-a3ef-a6e883abe616"
+  azurecr_subscription_name              = "DSB"
 
+}
 
 ### Create a Service Connection to GitHub
 
