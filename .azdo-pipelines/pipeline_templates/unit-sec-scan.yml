@@ -23,7 +23,7 @@ stages:
             - script: 
                echo "running py tests..."
                pytest test/
-              displayName: 'Run py tests'
+              displayName: 'Run python tests'
    
        - job: trivy_scan
          displayName: 'Run Trivy security scanner against the image'

@@ -10,7 +10,10 @@ resource "azuredevops_project" "this_project" {
     description = "This project is managed and Created by Terraform"
     features = {
       testplans = "disabled"
-      artifacts = "enabled"
+      artifacts = "disabled"
+      boards ="disabled"
+      pipelines = "enabled"
+      repositories = "disabled"
     
     }
 }
@@ -68,7 +71,7 @@ resource "azuredevops_build_definition" "this_definition" {
 
  variable_groups = [
     azuredevops_variable_group.credentials_group.id,
-    azuredevops_variable_group.backend_group.id,
+    azuredevops_variable_group.image_repo_variable.id,
   ]
 
     variable {
@@ -82,14 +85,11 @@ resource "azuredevops_build_definition" "this_definition" {
       value = "Smooth-Project-Name"
 
     }
-}
-
-
-
+} 
 
 
 ### Create Service Connection to Azure Container Registry ###
-
+### Authenticates the pipeline to ACR using OIDC and a User-Assigned Managed Identity ###
 resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
   project_id                             = azuredevops_project.this_project.id
   resource_group                         = var.resource_group_name

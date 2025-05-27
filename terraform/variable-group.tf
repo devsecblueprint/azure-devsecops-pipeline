@@ -1,36 +1,36 @@
-/*
- Make these into variable groups in Azure DevOps
-variables:
-  Container registry service connection established during pipeline creation
+# /*
+#  Make these into variable groups in Azure DevOps
+# variables:
+#   Container registry service connection established during pipeline creation
 
-  dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
+#   dockerRegistryServiceConnection: '{{ containerRegistryConnection.Id }}'
 
-  imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
+#   imageRepository: '{{#toAlphaNumericString imageRepository 50}}{{/toAlphaNumericString}}'
 
-  containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
+#   containerRegistry: '{{ containerRegistryConnection.Authorization.Parameters.loginServer }}'
 
-  dockerfilePath: '{{ dockerfilePath }}'
+#   dockerfilePath: '{{ dockerfilePath }}'
 
-  tag: '$(Build.BuildId)'
-*/
+#   tag: '$(Build.BuildId)'
+# */
 
 
-resource "azuredevops_variable_group" "credentials_group" {
+resource "azuredevops_variable_group" "infra_variable_group" {
   project_id   = azuredevops_project.this_project.id
   name         = "Infrastructure Pipeline Variables"
   description  = "Managed by Terraform"
   allow_access = true
 
   variable {
-    name  = "imageRepository"
-    secret_value = "this-is-a-secret-value"
+    name  = "ACR_NAME"
+    secret_value = azurerm_container_registry.this_container_registry.name
     is_secret = true
 
   }
   variable {
-    name  = "containerRegistry"
-    # secret_value = 
-    # is_secret = true
+    name  = "AKS_NAME"
+    secret_value =  azurerm_kubernetes_cluster.this_aks_cluster.name
+    is_secret = true
 
   }
 

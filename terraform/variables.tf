@@ -28,7 +28,18 @@ variable "location" {
   
 }
 
+### Repo Variables ###
+variable "infra_git_repo" {
+  type = string
+  description = " of the infra git repo"
 
+}
+
+variable "fast_api_git_repo" {
+  type = string
+  description = "name of the infra git repo"
+  
+}
 #### Azure Container Registry and Kubernetes Variables  ###
 
 variable "acr_name" {
