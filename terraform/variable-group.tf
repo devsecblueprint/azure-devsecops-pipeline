@@ -15,6 +15,7 @@
 # */
 
 
+
 resource "azuredevops_variable_group" "infra_variable_group" {
   project_id   = azuredevops_project.this_project.id
   name         = "Infrastructure Pipeline Variables"
@@ -27,12 +28,12 @@ resource "azuredevops_variable_group" "infra_variable_group" {
     is_secret = true
 
   }
-  variable {
-    name  = "AKS_NAME"
-    secret_value =  azurerm_kubernetes_cluster.this_aks_cluster.name
-    is_secret = true
+  # variable {
+  #   name  = "AKS_NAME"
+  #   secret_value =  azurerm_kubernetes_cluster.this_aks_cluster.name
+  #   is_secret = true
 
-  }
+  # }
 
   variable {
     name  = "AZ_CLIENT_ID"

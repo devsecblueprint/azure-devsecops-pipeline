@@ -32,13 +32,14 @@ variable "location" {
 variable "infra_git_repo" {
   type = string
   description = " of the infra git repo"
+  default = "https://github.com/thogue12/azure-devsecops-pipeline.git"
 
 }
 
 variable "fast_api_git_repo" {
   type = string
   description = "name of the infra git repo"
-  
+  default = "https://github.com/thogue12/python-fastapi.git"
 }
 #### Azure Container Registry and Kubernetes Variables  ###
 

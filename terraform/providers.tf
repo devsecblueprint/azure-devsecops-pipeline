@@ -17,11 +17,21 @@ terraform {
       source  = "hashicorp/azurerm"
       version = "4.28.0"
     }
+    azuread = {
+      source = "hashicorp/azuread"
+      version = "3.4.0"
+    }
   }
 }
 
+
 provider "azuredevops" {
   org_service_url = var.org_service_url
+}
+
+provider "azuread" {
+  tenant_id            = "233318cd-0fbb-44eb-9437-4e2681adf87e"
+  
 }
 
 provider "azurerm" {

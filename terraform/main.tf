@@ -1,4 +1,4 @@
-
+data "azuread_client_config" "current" {}
 
 
 ### Create a new Azure DevOps project
@@ -28,7 +28,7 @@ resource "azuredevops_git_repository" "infra_git_repo" {
     initialization {
         init_type = "Import"
         source_type = "Git"
-        source_url = "https://github.com/thogue12/azure-devsecops-pipeline.git"
+        source_url = var.infra_git_repo
         # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
     }
   
@@ -42,7 +42,7 @@ resource "azuredevops_git_repository" "fast_api_git_repo" {
     initialization {
         init_type = "Import"
         source_type = "Git"
-        source_url = "https://github.com/thogue12/python-fastapi.git"
+        source_url = var.fast_api_git_repo
         # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
     }
   
@@ -70,7 +70,7 @@ resource "azuredevops_build_definition" "this_definition" {
  
 
  variable_groups = [
-    azuredevops_variable_group.credentials_group.id,
+    azuredevops_variable_group.infra_variable_group.id,
     azuredevops_variable_group.image_repo_variable.id,
   ]
 
@@ -87,6 +87,41 @@ resource "azuredevops_build_definition" "this_definition" {
     }
 } 
 
+### Create Federated identity for Azure DevOps Pipeline ###
+resource "azurerm_user_assigned_identity" "this_uaid" {
+  location            = azurerm_resource_group.this_resource_group.location
+  name                = "DevSecOps-User-Assigned-Identity"
+  resource_group_name = azurerm_resource_group.this_resource_group.name
+}
+
+resource "azurerm_role_assignment" "acr_push" {
+  principal_id   = azurerm_user_assigned_identity.this_uaid.principal_id
+  role_definition_name = "AcrPush"
+  scope          = azurerm_container_registry.this_container_registry.id
+}
+
+resource "azurerm_role_assignment" "acr_pull" {
+  principal_id   = azurerm_user_assigned_identity.this_uaid.principal_id
+  role_definition_name = "AcrPull"
+  scope          = azurerm_container_registry.this_container_registry.id
+}
+
+resource "azuread_application" "this_app" {
+  display_name     = "Az-DevSecOps-App"
+  owners           = [data.azuread_client_config.current.object_id]
+}
+
+
+resource "azurerm_federated_identity_credential" "ado_fed-id" {
+  name                = "DevSecOps-Fed-Identity"
+  resource_group_name = azurerm_resource_group.this_resource_group.name
+  audience            = ["api://AzureADTokenExchange"]
+  issuer              = "https://dev.azure.com/thogue1267"
+  parent_id           = azuread_application.this_app.id
+  subject             = "system:build:pipeline:${azuredevops_build_definition.this_definition.id}"
+
+  depends_on = [ azuredevops_build_definition.this_definition ]
+}
 
 ### Create Service Connection to Azure Container Registry ###
 ### Authenticates the pipeline to ACR using OIDC and a User-Assigned Managed Identity ###
@@ -100,17 +135,12 @@ resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
   azurecr_subscription_id                = "9e3af6ab-6e22-4d23-a3ef-a6e883abe616"
   azurecr_subscription_name              = "DSB"
 
+    credentials {
+    serviceprincipalid = azuread_application.this_app.client_id
+  }
+
+
+  
+
 }
 
-### Create a Service Connection to GitHub
-
-### This only is only used for private repositories
-# resource "azuredevops_serviceendpoint_github" "this_github" {
-#     project_id = azuredevops_project.this_project.id
-#     service_endpoint_name = "GitHub"
-#     description = "Github Service Connection"
-
-#     auth_personal {
-#       personal_access_token = var.github_pat
-#     }
-# }
