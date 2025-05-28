@@ -1,6 +1,10 @@
 ## Build Docker Image
+# parameters:
+#   - name: imageName
+#     type: string
+#     default: 'awesome-fastapi'
 
-jobs:
+job:
   - job: Build
     pool:
       vmImage: ubuntu-latest
