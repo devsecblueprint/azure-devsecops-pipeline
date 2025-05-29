@@ -1,8 +1,4 @@
 
-variables:
-  - group: azure-devsecops-pipeline-variables  
-
-
 jobs:
   - job: push_image
     displayName: 'Build and Push Docker Image'

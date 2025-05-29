@@ -90,7 +90,7 @@ resource "azuredevops_build_definition" "this_definition" {
 ### Create Federated identity for Azure DevOps Pipeline ###
 resource "azurerm_user_assigned_identity" "this_uaid" {
   location            = azurerm_resource_group.this_resource_group.location
-  name                = "DevSecOps-User-Assigned-Identity"
+  name                = var.uaid_name
   resource_group_name = azurerm_resource_group.this_resource_group.name
 }
 
@@ -106,6 +106,12 @@ resource "azurerm_role_assignment" "acr_pull" {
   scope                = azurerm_container_registry.this_container_registry.id
 }
 
+resource "azurerm_role_assignment" "uaid_contributor" {
+  principal_id         = azurerm_user_assigned_identity.this_uaid.principal_id
+  role_definition_name = "Contributor"
+  scope                = azurerm_container_registry.this_container_registry.id
+}
+
 # resource "azuread_application" "this_app" {
 #   display_name     = "Az-DevSecOps-App"
 #   owners           = [data.azuread_client_config.current.object_id]
@@ -116,9 +122,9 @@ resource "azurerm_federated_identity_credential" "ado_fed-id" {
   name                = "DevSecOps-Fed-Identity"
   resource_group_name = azurerm_resource_group.this_resource_group.name
   audience            = ["api://AzureADTokenExchange"]
-  issuer              = "https://vstoken.dev.azure.comhttps:/thogue1267"  ## https://vstoken.dev.azure.com/<organization>
+  issuer              = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.workload_identity_federation_issuer ## https://vstoken.dev.azure.com/<organization>
   parent_id           = azurerm_user_assigned_identity.this_uaid.id
-  subject             = "sc://thogue1267/${var.project_name}:${azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id}"
+  subject             = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.workload_identity_federation_subject
 
   # sc://thogue1267/DevSecOps-FastApi/TimBoslice-Connection
   ## sc://<organization>/<project>/<service-connection-name> "this = subject"

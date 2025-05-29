@@ -2,6 +2,10 @@
 ### No need for the workflow_dispatch trigger like in GitHub Actions
 ## This is the main pipeline file
 ## This file is used to call all the other templates
+variables:
+  - group: Infrastructure Pipeline Variables 
+  - name: ACR_SERVICE_CONNECTION
+  - name: image_repo
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -24,6 +28,7 @@ stages:
     displayName: 'Unit security testing'
     jobs:
       - template: "pipeline_templates/unit-sec-scan.yml"
+
 
   - stage: push_image
     displayName: 'Push Docker Image'

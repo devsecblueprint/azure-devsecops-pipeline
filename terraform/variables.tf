@@ -57,6 +57,13 @@ variable "aks_name" {
 
 }
 
+variable "uaid_name" {
+  type        = string
+  description = "name of the Azure Kubernetes Service"
+  default     = "DevSecOps-User-Assigned-Identity"
+
+}
+
 ### Azure DevOps Variables ###
 variable "project_name" {
   description = "The name of the Azure DevOps project to create."

@@ -1,8 +1,6 @@
 
 
-stages:
-   - stage: Unit_and_Security_Testing
-     jobs:
+jobs:
        - job: testing_phase
          displayName: 'Run unit test'
          pool:
