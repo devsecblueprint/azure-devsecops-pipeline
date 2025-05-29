@@ -11,7 +11,7 @@ resource "azurerm_container_registry" "this_container_registry" {
   location            = var.location
   sku                 = "Standard"
 
-  depends_on = [ azurerm_resource_group.this_resource_group ]
+  depends_on = [azurerm_resource_group.this_resource_group]
 }
 
 # resource "azurerm_kubernetes_cluster" "this_aks_cluster" {

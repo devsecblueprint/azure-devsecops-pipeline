@@ -3,34 +3,33 @@
 ## This is the main pipeline file
 ## This file is used to call all the other templates
 
-jobs:
-  - job: build_image
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: build_image
     displayName: 'Build Docker Image'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+    jobs:
       - template: "pipeline_templates/build-image.yml"
 
-  - job: lint-formating
+  - stage: lint_formating
     displayName: 'Lint and Format'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-      - template: "pipeline_templates/linting.yml"
+    jobs:
+      - template: pipeline_templates/linting.yml
+        parameters:
+          python_version: '3.12.6'
 
-  - job: unit_and_security_testing
+
+  - stage: unit_and_security_testing
     displayName: 'Unit security testing'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+    jobs:
       - template: "pipeline_templates/unit-sec-scan.yml"
 
-  - job: push_image
+  - stage: push_image
     displayName: 'Push Docker Image'
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
+    jobs:
       - template: "pipeline_templates/push-image.yml"
+
 
 
                

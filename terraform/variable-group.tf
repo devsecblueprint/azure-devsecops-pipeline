@@ -23,9 +23,16 @@ resource "azuredevops_variable_group" "infra_variable_group" {
   allow_access = true
 
   variable {
-    name  = "ACR_NAME"
+    name         = "ACR_NAME"
     secret_value = azurerm_container_registry.this_container_registry.name
-    is_secret = true
+    is_secret    = true
+
+  }
+
+    variable {
+    name         = "ACR_SERVICE_CONNECTION"
+    secret_value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
+    is_secret    = true
 
   }
   # variable {
@@ -36,9 +43,9 @@ resource "azuredevops_variable_group" "infra_variable_group" {
   # }
 
   variable {
-    name  = "AZ_CLIENT_ID"
-    # secret_value = 
-    # is_secret = true
+    name = "image_repo"
+    secret_value = var.fast_api_git_repo
+    is_secret = true
 
   }
 

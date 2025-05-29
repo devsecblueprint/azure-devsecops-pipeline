@@ -4,10 +4,10 @@
 #     type: string
 #     default: 'awesome-fastapi'
 
-job:
-  - job: Build
-    pool:
-      vmImage: ubuntu-latest
+
+
+jobs:
+  - job:
     steps:
       - checkout: self
         displayName: 'Checkout repo'
@@ -16,3 +16,4 @@ job:
           echo "Building Docker image..."
           docker build -t awesome-fastapi:$(Build.SourceVersion).
         displayName: 'Build Docker Image'
+

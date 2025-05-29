@@ -18,7 +18,7 @@ terraform {
       version = "4.28.0"
     }
     azuread = {
-      source = "hashicorp/azuread"
+      source  = "hashicorp/azuread"
       version = "3.4.0"
     }
   }
@@ -30,8 +30,8 @@ provider "azuredevops" {
 }
 
 provider "azuread" {
-  tenant_id            = "233318cd-0fbb-44eb-9437-4e2681adf87e"
-  
+  tenant_id = "233318cd-0fbb-44eb-9437-4e2681adf87e"
+
 }
 
 provider "azurerm" {

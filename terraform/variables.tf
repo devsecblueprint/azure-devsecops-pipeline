@@ -3,11 +3,11 @@ variable "tfc_azure_dynamic_credentials" {
   description = "Object containing Azure dynamic credentials configuration"
   type = object({
     default = object({
-      client_id_file_path = string
+      client_id_file_path  = string
       oidc_token_file_path = string
     })
     aliases = map(object({
-      client_id_file_path = string
+      client_id_file_path  = string
       oidc_token_file_path = string
     }))
   })
@@ -16,45 +16,45 @@ variable "tfc_azure_dynamic_credentials" {
 ### Resource Group Variables ###
 
 variable "resource_group_name" {
-  type = string
+  type        = string
   description = "name of the resource group"
-  default = "fast-api-rg"
+  default     = "fast-api-rg"
 }
 
 variable "location" {
-  type = string
+  type        = string
   description = "location of the resource group"
-  default = "eastus"
-  
+  default     = "eastus"
+
 }
 
 ### Repo Variables ###
 variable "infra_git_repo" {
-  type = string
+  type        = string
   description = " of the infra git repo"
-  default = "https://github.com/thogue12/azure-devsecops-pipeline.git"
+  default     = "https://github.com/thogue12/azure-devsecops-pipeline.git"
 
 }
 
 variable "fast_api_git_repo" {
-  type = string
+  type        = string
   description = "name of the infra git repo"
-  default = "https://github.com/thogue12/python-fastapi.git"
+  default     = "https://github.com/thogue12/python-fastapi.git"
 }
 #### Azure Container Registry and Kubernetes Variables  ###
 
 variable "acr_name" {
-  type = string
+  type        = string
   description = "name of the Azure Container Registry"
-  default = "fastapidevsecopsacr"
-  
+  default     = "fastapidevsecopsacr"
+
 }
 
 variable "aks_name" {
-  type = string
+  type        = string
   description = "name of the Azure Kubernetes Service"
-  default = "fastapidevsecopsaks"
-  
+  default     = "fastapidevsecopsaks"
+
 }
 
 ### Azure DevOps Variables ###
@@ -75,7 +75,7 @@ variable "org_service_url" {
   sensitive = true
 }
 
-variable "use_yaml"{
+variable "use_yaml" {
   description = "Bolean to determine if the pipeline should use the trigger defined in the yaml file or not"
   type        = bool
   default     = false
