@@ -69,7 +69,7 @@ jobs:
           displayName: 'Wait for Docker container to be ready'
 
         - script: docker ps
-          displayName: 'Confirm Docker container is running
+          displayName: 'Confirm Docker container is running'
         - script: |
              docker run --rm -v $(System.DefaultWorkingDirectory):/zap/wrk/:rw \
              owasp/zap2docker-stable zap-full-scan.py \
@@ -77,7 +77,7 @@ jobs:
              -x zap-report.xml \
              -r zap-report.html \
              || true
-          displayName: 'Run OWASP ZAP Security Scanner
+          displayName: 'Run OWASP ZAP Security Scanner'
         ### work in progress
        #  - task: OwaspZapScan@0
        #     inputs:
