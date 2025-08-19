@@ -72,11 +72,6 @@ variable "project_name" {
 
 }
 
-# variable "github_pat" {
-#   type      = string
-#   sensitive = true
-# }
-
 variable "org_service_url" {
   type      = string
   sensitive = true

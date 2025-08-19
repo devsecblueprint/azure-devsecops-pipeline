@@ -5,13 +5,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    terraform-apply-eks:
-        uses: ./.github/workflows/terraform-apply-eks.yml
-        permissions:
-            contents: read
-        secrets: inherit
     terraform-apply-pipelines:
-        needs: terraform-apply-eks
         uses: ./.github/workflows/terraform-apply-pipelines.yml
         permissions:
             contents: read
