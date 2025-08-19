@@ -28,7 +28,7 @@ resource "azurerm_kubernetes_cluster" "this_aks_cluster" {
   }
 
   identity {
-    type = "UserAssigned"
+    type         = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.this_uaid.id]
   }
 
@@ -39,6 +39,6 @@ resource "azurerm_kubernetes_cluster" "this_aks_cluster" {
     azurerm_role_assignment.uaid_contributor,
     azurerm_role_assignment.acr_pull,
     azurerm_role_assignment.acr_push
-    ]
+  ]
 }
 

@@ -29,7 +29,7 @@ resource "azuredevops_variable_group" "infra_variable_group" {
 
   }
 
-    variable {
+  variable {
     name         = "ACR_SERVICE_CONNECTION"
     secret_value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
     is_secret    = true
@@ -43,9 +43,9 @@ resource "azuredevops_variable_group" "infra_variable_group" {
   # }
 
   variable {
-    name = "image_repo"
+    name         = "image_repo"
     secret_value = var.fast_api_git_repo
-    is_secret = true
+    is_secret    = true
 
   }
 
