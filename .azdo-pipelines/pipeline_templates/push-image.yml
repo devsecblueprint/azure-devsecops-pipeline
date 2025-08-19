@@ -1,0 +1,27 @@
+
+jobs:
+  - job: push_image
+    displayName: 'Build and Push Docker Image'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - checkout: self
+        displayName: 'Checkout repo'
+### Push the Docker image to Azure Container Registry ### 
+      - task: Docker@2
+        displayName: 'Build and Push Docker Image to ACR'
+        inputs:
+            command: buildAndPush
+            containerRegistry: $(ACR_SERVICE_CONNECTION)  # name of your ADO service connection to ACR  
+            repository: $(image_repo)                # e.g. myacr.azurecr.io/myapp
+            dockerfile: $(src/Dockerfile)                # e.g. src/Dockerfile
+            tags: |
+              latest
+              $(Build.BuildId)
+                
+                
+# /.azdo-pipelines/pipeline_templates/push-image.yml (Line: 9, Col: 25): While parsing a block mapping, did not find expected key.
+
+
+# Job push_image: Step input containerRegistry references service connection $(dockerRegistryServiceConnection) which could not be found. The service connection does not exist,
+#  has been disabled or has not been authorized for use. For authorization details, refer to https://aka.ms/yamlauthz.

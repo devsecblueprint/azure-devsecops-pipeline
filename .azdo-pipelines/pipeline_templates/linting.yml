@@ -1,0 +1,37 @@
+
+  ### Linting and Formatting checks
+parameters:
+  - name: python_version
+    type: string
+    default: '3.12.6'
+
+jobs:
+  - job: lint_formating
+    displayName: 'Lint and Format'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - checkout: self
+
+      - task: UsePythonVersion@0
+        inputs:
+          versionSpec: ${{ parameters.python_version }}
+
+      - script: |
+          echo "Installing dependencies..."
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - script: |
+          echo "Running pylint..."
+          pylint .
+
+      - script: |
+          echo "Running black..."
+          black --check .
+
+
+# /.azdo-pipelines/pipeline_templates/linting.yml (Line: 8, Col: 1): While parsing a block mapping, did not find expected key. == "SyntaxError: while parsing a block mapping"
+
+# /.azdo-pipelines/pipeline_templates/linting.yml (Line: 15, Col: 25): A sequence was not expected == ' I did not need the matric and stratgey when using parameters in the template file. I should have used 'parameters' instead of 'matrix' and 'strategy'.'
+# /.azdo-pipelines/azure-pipelines.yml (Line: 20, Col: 26): Unexpected parameter 'pythonVersion' == "pythonVersion in the main yaml file was not matching with the one in the template file. It should be 'python-version' instead of 'pythonVersion'."

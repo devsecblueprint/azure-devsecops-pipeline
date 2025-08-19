@@ -1,0 +1,40 @@
+### Manual workflow triggers are built-in to the pipeline
+### No need for the workflow_dispatch trigger like in GitHub Actions
+## This is the main pipeline file
+## This file is used to call all the other templates
+variables:
+  - group: Infrastructure Pipeline Variables 
+  - name: ACR_SERVICE_CONNECTION
+  - name: image_repo
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage: build_image
+    displayName: 'Build Docker Image'
+    jobs:
+      - template: "pipeline_templates/build-image.yml"
+
+  - stage: lint_formating
+    displayName: 'Lint and Format'
+    jobs:
+      - template: pipeline_templates/linting.yml
+        parameters:
+          python_version: '3.12.6'
+
+
+  - stage: unit_and_security_testing
+    displayName: 'Unit security testing'
+    jobs:
+      - template: "pipeline_templates/unit-sec-scan.yml"
+
+
+  - stage: push_image
+    displayName: 'Push Docker Image'
+    jobs:
+      - template: "pipeline_templates/push-image.yml"
+
+
+
+               
