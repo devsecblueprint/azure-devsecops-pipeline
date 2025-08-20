@@ -3,8 +3,8 @@ data "azuread_client_config" "current" {}
 
 ### Create a new Azure DevOps project
 resource "azuredevops_project" "this_project" {
-  name               = var.project_name
-  visibility         = "public"
+  name               = "python-fastapi"
+  visibility         = "private"
   version_control    = "Git"
   work_item_template = "Agile"
   description        = "This project is managed and Created by Terraform"
@@ -14,7 +14,6 @@ resource "azuredevops_project" "this_project" {
     boards       = "disabled"
     pipelines    = "enabled"
     repositories = "enabled"
-
   }
 }
 
@@ -43,7 +42,6 @@ resource "azuredevops_git_repository" "fast_api_git_repo" {
     init_type   = "Import"
     source_type = "Git"
     source_url  = var.fast_api_git_repo
-    # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
   }
 
 }
@@ -64,7 +62,7 @@ resource "azuredevops_build_definition" "this_definition" {
   repository {
     repo_type   = "TfsGit"
     repo_id     = azuredevops_git_repository.infra_git_repo.id
-    branch_name = "testing"
+    branch_name = "main"
     yml_path    = ".azdo-pipelines/azure-pipelines.yml"
   }
 
@@ -77,12 +75,6 @@ resource "azuredevops_build_definition" "this_definition" {
   variable {
     name  = "ApplicationName"
     value = "FastAPI"
-
-  }
-
-  variable {
-    name  = "ProjetName"
-    value = "Smooth-Project-Name"
 
   }
 }
@@ -111,12 +103,6 @@ resource "azurerm_role_assignment" "uaid_contributor" {
   role_definition_name = "Contributor"
   scope                = azurerm_container_registry.this_container_registry.id
 }
-
-# resource "azuread_application" "this_app" {
-#   display_name     = "Az-DevSecOps-App"
-#   owners           = [data.azuread_client_config.current.object_id]
-# }
-
 
 resource "azurerm_federated_identity_credential" "ado_fed-id" {
   name                = "DevSecOps-Fed-Identity"
@@ -147,9 +133,4 @@ resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
   credentials {
     serviceprincipalid = azurerm_user_assigned_identity.this_uaid.client_id
   }
-
-
-
-
 }
-

@@ -1,17 +1,10 @@
-
-variable "tfc_azure_dynamic_credentials" {
-  description = "Object containing Azure dynamic credentials configuration"
-  type = object({
-    default = object({
-      client_id_file_path  = string
-      oidc_token_file_path = string
-    })
-    aliases = map(object({
-      client_id_file_path  = string
-      oidc_token_file_path = string
-    }))
-  })
-}
+# Default Variables
+variable "TFC_AZ_CLIENT_ID" {}
+variable "TFC_AZ_CLIENT_PASSWORD" {}
+variable "TFC_AZ_TENANT_ID" {}
+variable "TFC_AZ_SUBSCRIPTION_ID" {}
+variable "TFC_AZ_DEVOPS_ORG_SERVICE_URL" {}
+variable "TFC_AZ_DEVOPS_PAT" {}
 
 ### Resource Group Variables ###
 
@@ -31,18 +24,17 @@ variable "location" {
 ### Repo Variables ###
 variable "infra_git_repo" {
   type        = string
-  description = " of the infra git repo"
-  default     = "https://github.com/thogue12/azure-devsecops-pipeline.git"
-
+  description = "name of the infra git repo"
+  default     = "https://github.com/devsecblueprint/azure-devsecops-pipeline.git"
 }
 
 variable "fast_api_git_repo" {
   type        = string
-  description = "name of the infra git repo"
-  default     = "https://github.com/thogue12/python-fastapi.git"
+  description = "name of the fast api git repo"
+  default     = "https://github.com/devsecblueprint/azure-python-fastapi.git"
 }
-#### Azure Container Registry and Kubernetes Variables  ###
 
+#### Azure Container Registry and Kubernetes Variables  ###
 variable "acr_name" {
   type        = string
   description = "name of the Azure Container Registry"
@@ -65,17 +57,6 @@ variable "uaid_name" {
 }
 
 ### Azure DevOps Variables ###
-variable "project_name" {
-  description = "The name of the Azure DevOps project to create."
-  type        = string
-  default     = "DevSecOps-FastApi"
-
-}
-
-variable "org_service_url" {
-  type      = string
-  sensitive = true
-}
 
 variable "use_yaml" {
   description = "Bolean to determine if the pipeline should use the trigger defined in the yaml file or not"
