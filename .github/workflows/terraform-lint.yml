@@ -18,4 +18,4 @@ jobs:
           terraform_version: latest
 
       - name: Format Terraform files
-        run: terraform fmt -check
+        run: terraform fmt -check -recursive
