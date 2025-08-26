@@ -5,8 +5,8 @@ on:
     workflow_dispatch:
 
 jobs:
-    terraform-apply-pipelines:
-        uses: ./.github/workflows/terraform-apply-pipelines.yml
+    terraform-apply:
+        uses: ./.github/workflows/terraform-apply.yml
         permissions:
             contents: read
         secrets: inherit
