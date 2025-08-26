@@ -17,26 +17,10 @@ resource "azuredevops_project" "this_project" {
   }
 }
 
-
-### Create a new Git repository
-
-resource "azuredevops_git_repository" "infra_git_repo" {
-  project_id = azuredevops_project.this_project.id
-  name       = "Infra-Test"
-
-  initialization {
-    init_type   = "Import"
-    source_type = "Git"
-    source_url  = var.infra_git_repo
-    # service_connection_id = azuredevops_serviceendpoint_github.this_github.id
-  }
-
-}
-
 ### Create a new Git repository for FastAPI
 resource "azuredevops_git_repository" "fast_api_git_repo" {
   project_id = azuredevops_project.this_project.id
-  name       = "FastAPI-Test"
+  name       = "azure-python-fastapi"
 
   initialization {
     init_type   = "Import"
@@ -50,8 +34,7 @@ resource "azuredevops_git_repository" "fast_api_git_repo" {
 ### Create Build Definition ###
 resource "azuredevops_build_definition" "this_definition" {
   project_id = azuredevops_project.this_project.id
-  name       = "Terraform-Infra-Main"
-  path       = "\\Terraform"
+  name       = "Default"
 
   ci_trigger {
     use_yaml = var.use_yaml
@@ -59,8 +42,8 @@ resource "azuredevops_build_definition" "this_definition" {
 
 
   repository {
-    repo_type   = "TfsGit"
-    repo_id     = azuredevops_git_repository.infra_git_repo.id
+    repo_type   = "default"
+    repo_id     = azuredevops_git_repository.fast_api_git_repo.id
     branch_name = "main"
     yml_path    = ".azdo-pipelines/azure-pipelines.yml"
   }
@@ -73,8 +56,7 @@ resource "azuredevops_build_definition" "this_definition" {
 
   variable {
     name  = "ApplicationName"
-    value = "FastAPI"
-
+    value = "Python FastAPI"
   }
 }
 
