@@ -32,10 +32,10 @@ resource "azuredevops_build_definition" "this" {
   project_id = azuredevops_project.this.id
   name       = "Default"
 
+  # Let YAML in the repo control the pipeline (triggers, steps, etc.)
   ci_trigger {
-    use_yaml = var.use_yaml
+    use_yaml = true
   }
-
 
   repository {
     repo_type   = "GitHub"

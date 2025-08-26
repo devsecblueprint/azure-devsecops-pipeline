@@ -43,11 +43,3 @@ variable "uaid_name" {
   default     = "DevSecOps-User-Assigned-Identity"
 
 }
-
-### Azure DevOps Variables ###
-
-variable "use_yaml" {
-  description = "Bolean to determine if the pipeline should use the trigger defined in the yaml file or not"
-  type        = bool
-  default     = false
-}
