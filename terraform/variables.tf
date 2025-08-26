@@ -5,6 +5,7 @@ variable "TFC_AZ_TENANT_ID" {}
 variable "TFC_AZ_SUBSCRIPTION_ID" {}
 variable "TFC_AZ_DEVOPS_ORG_SERVICE_URL" {}
 variable "TFC_AZ_DEVOPS_PAT" {}
+variable "TFC_AZ_DEVOPS_GITHUB_PAT" {}
 
 ### Resource Group Variables ###
 
@@ -19,19 +20,6 @@ variable "location" {
   description = "location of the resource group"
   default     = "eastus"
 
-}
-
-### Repo Variables ###
-variable "infra_git_repo" {
-  type        = string
-  description = "name of the infra git repo"
-  default     = "https://github.com/devsecblueprint/azure-devsecops-pipeline.git"
-}
-
-variable "fast_api_git_repo" {
-  type        = string
-  description = "name of the fast api git repo"
-  default     = "https://github.com/devsecblueprint/azure-python-fastapi.git"
 }
 
 #### Azure Container Registry and Kubernetes Variables  ###

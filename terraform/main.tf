@@ -2,7 +2,7 @@ data "azuread_client_config" "current" {}
 
 
 ### Create a new Azure DevOps project
-resource "azuredevops_project" "this_project" {
+resource "azuredevops_project" "this" {
   name               = "python-fastapi"
   visibility         = "private"
   version_control    = "Git"
@@ -18,22 +18,18 @@ resource "azuredevops_project" "this_project" {
 }
 
 ### Create a new Git repository for FastAPI
-resource "azuredevops_git_repository" "fast_api_git_repo" {
-  project_id = azuredevops_project.this_project.id
-  name       = "azure-python-fastapi"
+resource "azuredevops_serviceendpoint_github" "this" {
+  project_id            = azuredevops_project.this.id
+  service_endpoint_name = "python-fastapi"
 
-  initialization {
-    init_type   = "Import"
-    source_type = "Git"
-    source_url  = var.fast_api_git_repo
+  auth_personal {
+    personal_access_token = var.TFC_AZ_DEVOPS_GITHUB_PAT
   }
-
 }
 
-
 ### Create Build Definition ###
-resource "azuredevops_build_definition" "this_definition" {
-  project_id = azuredevops_project.this_project.id
+resource "azuredevops_build_definition" "this" {
+  project_id = azuredevops_project.this.id
   name       = "Default"
 
   ci_trigger {
@@ -42,10 +38,11 @@ resource "azuredevops_build_definition" "this_definition" {
 
 
   repository {
-    repo_type   = "default"
-    repo_id     = azuredevops_git_repository.fast_api_git_repo.id
+    repo_type   = "GitHub"
+    repo_id     = "devsecblueprint/azure-python-fastapi"
     branch_name = "main"
     yml_path    = ".azdo-pipelines/azure-pipelines.yml"
+    service_connection_id = azuredevops_serviceendpoint_github.this.id
   }
 
 
@@ -96,13 +93,13 @@ resource "azurerm_federated_identity_credential" "ado_fed-id" {
   # sc://thogue1267/DevSecOps-FastApi/TimBoslice-Connection
   ## sc://<organization>/<project>/<service-connection-name> "this = subject"
 
-  depends_on = [azuredevops_build_definition.this_definition]
+  depends_on = [azuredevops_build_definition.this]
 }
 
 ### Create Service Connection to Azure Container Registry ###
 ### Authenticates the pipeline to ACR using OIDC and a User-Assigned Managed Identity ###
 resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
-  project_id                             = azuredevops_project.this_project.id
+  project_id                             = azuredevops_project.this.id
   resource_group                         = var.resource_group_name
   service_endpoint_name                  = "AzureCR Endpoint"
   service_endpoint_authentication_scheme = "WorkloadIdentityFederation"
