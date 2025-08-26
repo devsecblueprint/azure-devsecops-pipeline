@@ -50,12 +50,11 @@ resource "azuredevops_git_repository" "fast_api_git_repo" {
 ### Create Build Definition ###
 resource "azuredevops_build_definition" "this_definition" {
   project_id = azuredevops_project.this_project.id
-  name       = "Terraform-INfra-Main"
+  name       = "Terraform-Infra-Main"
   path       = "\\Terraform"
 
   ci_trigger {
     use_yaml = var.use_yaml
-
   }
 
 
