@@ -13,7 +13,7 @@ resource "azuredevops_project" "this" {
     artifacts    = "disabled"
     boards       = "disabled"
     pipelines    = "enabled"
-    repositories = "enabled"
+    repositories = "disabled"
   }
 }
 
