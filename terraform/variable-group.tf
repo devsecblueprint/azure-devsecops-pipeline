@@ -5,37 +5,13 @@ resource "azuredevops_variable_group" "infra_variable_group" {
   allow_access = true
 
   variable {
-    name         = "ACR_NAME"
-    secret_value = azurerm_container_registry.this_container_registry.name
-    is_secret    = false
+    name  = "ACR_URL"
+    value = azurerm_container_registry.this_container_registry.login_server
 
   }
 
   variable {
-    name         = "ACR_SERVICE_CONNECTION"
-    secret_value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
-    is_secret    = false
-  }
-}
-
-
-resource "azuredevops_variable_group" "image_repo_variable" {
-  project_id   = azuredevops_project.this.id
-  name         = "Image Repository Variables"
-  description  = "Managed by Terraform"
-  allow_access = true
-
-  variable {
-    name  = "imageRepository"
-    value = ""
-  }
-  variable {
-    name  = "containerRegistry"
-    value = ""
-  }
-
-  variable {
-    name  = "AZ_CONTAINER_NAME"
-    value = ""
+    name  = "ACR_SERVICE_CONNECTION"
+    value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
   }
 }

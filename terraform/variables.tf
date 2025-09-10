@@ -8,7 +8,6 @@ variable "TFC_AZ_DEVOPS_PAT" {}
 variable "TFC_AZ_DEVOPS_GITHUB_PAT" {}
 
 ### Resource Group Variables ###
-
 variable "resource_group_name" {
   type        = string
   description = "name of the resource group"
@@ -19,27 +18,23 @@ variable "location" {
   type        = string
   description = "location of the resource group"
   default     = "eastus"
-
 }
 
 #### Azure Container Registry and Kubernetes Variables  ###
 variable "acr_name" {
   type        = string
   description = "name of the Azure Container Registry"
-  default     = "fastapidevsecopsacr"
-
+  default     = "DSBContainerRegistry"
 }
 
 variable "aks_name" {
   type        = string
   description = "name of the Azure Kubernetes Service"
-  default     = "fastapidevsecopsaks"
-
+  default     = "DSB-AKS-Cluster"
 }
 
 variable "uaid_name" {
   type        = string
   description = "name of the Azure Kubernetes Service"
-  default     = "DevSecOps-User-Assigned-Identity"
-
+  default     = "DSB-UA-Identity"
 }

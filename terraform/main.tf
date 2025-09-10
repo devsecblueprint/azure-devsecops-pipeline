@@ -48,7 +48,6 @@ resource "azuredevops_build_definition" "this" {
 
   variable_groups = [
     azuredevops_variable_group.infra_variable_group.id,
-    azuredevops_variable_group.image_repo_variable.id,
   ]
 
   variable {
