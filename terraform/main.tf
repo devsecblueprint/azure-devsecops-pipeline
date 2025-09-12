@@ -1,6 +1,3 @@
-data "azuread_client_config" "current" {}
-
-
 ### Create a new Azure DevOps project
 resource "azuredevops_project" "this" {
   name               = "python-fastapi"
@@ -111,3 +108,95 @@ resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
     serviceprincipalid = azurerm_user_assigned_identity.this_uaid.client_id
   }
 }
+
+resource "azuredevops_variable_group" "infra_variable_group" {
+  project_id   = azuredevops_project.this.id
+  name         = "Infrastructure Pipeline Variables"
+  description  = "Managed by Terraform"
+  allow_access = true
+
+  variable {
+    name  = "ACR_URL"
+    value = azurerm_container_registry.this_container_registry.login_server
+  }
+
+  variable {
+    name  = "ACR_SERVICE_CONNECTION"
+    value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
+  }
+
+  variable {
+    name  = "AKS_CLUSTER_NAME"
+    value = azurerm_kubernetes_cluster.this_aks_cluster.name
+  }
+
+  variable {
+    name  = "AZURE_SERVICE_CONNECTION"
+    value = azuredevops_serviceendpoint_azurerm.arm_sc.id
+  }
+
+  variable {
+    name  = "RESOURCE_GROUP_NAME"
+    value = azurerm_resource_group.this_resource_group.name
+  }
+}
+
+
+resource "azurerm_resource_group" "this_resource_group" {
+  name     = var.resource_group_name
+  location = var.location
+}
+
+resource "azurerm_container_registry" "this_container_registry" {
+  name                = var.acr_name
+  resource_group_name = azurerm_resource_group.this_resource_group.name
+  location            = var.location
+  sku                 = "Standard"
+
+  depends_on = [azurerm_resource_group.this_resource_group]
+}
+
+resource "azuredevops_serviceendpoint_azurerm" "arm_sc" {
+  project_id            = azuredevops_project.this.id
+  service_endpoint_name = "Azure ARM Endpoint"
+
+  environment               = "AzureCloud"
+  azurerm_spn_tenantid      = var.TFC_AZ_TENANT_ID
+  azurerm_subscription_id   = var.TFC_AZ_SUBSCRIPTION_ID
+  azurerm_subscription_name = "DSB"
+
+  service_endpoint_authentication_scheme = "WorkloadIdentityFederation"
+
+  credentials {
+    serviceprincipalid = azurerm_user_assigned_identity.this_uaid.client_id
+  }
+}
+
+resource "azurerm_kubernetes_cluster" "this_aks_cluster" {
+  name                = var.aks_name
+  location            = var.location
+  resource_group_name = azurerm_resource_group.this_resource_group.name
+  dns_prefix          = "DSB"
+
+
+  default_node_pool {
+    name       = "default"
+    node_count = 1
+    vm_size    = "Standard_A2_v2"
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = [azurerm_user_assigned_identity.this_uaid.id]
+  }
+
+  tags = {
+    Environment = "Production"
+  }
+  depends_on = [
+    azurerm_role_assignment.uaid_contributor,
+    azurerm_role_assignment.acr_pull,
+    azurerm_role_assignment.acr_push
+  ]
+}
+
