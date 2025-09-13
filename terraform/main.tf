@@ -78,16 +78,13 @@ resource "azurerm_role_assignment" "uaid_contributor" {
   scope                = azurerm_container_registry.this_container_registry.id
 }
 
-resource "azurerm_federated_identity_credential" "ado_fed-id" {
+resource "azurerm_federated_identity_credential" "ado_fed_id" {
   name                = "DevSecOps-Fed-Identity"
   resource_group_name = azurerm_resource_group.this_resource_group.name
   audience            = ["api://AzureADTokenExchange"]
   issuer              = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.workload_identity_federation_issuer ## https://vstoken.dev.azure.com/<organization>
   parent_id           = azurerm_user_assigned_identity.this_uaid.id
   subject             = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.workload_identity_federation_subject
-
-  # sc://thogue1267/DevSecOps-FastApi/TimBoslice-Connection
-  ## sc://<organization>/<project>/<service-connection-name> "this = subject"
 
   depends_on = [azuredevops_build_definition.this]
 }
@@ -123,11 +120,6 @@ resource "azuredevops_variable_group" "infra_variable_group" {
   variable {
     name  = "ACR_SERVICE_CONNECTION"
     value = azuredevops_serviceendpoint_azurecr.acr_registry_endpoint.id
-  }
-
-  variable {
-    name  = "AKS_CLUSTER_NAME"
-    value = azurerm_kubernetes_cluster.this_aks_cluster.name
   }
 
   variable {
@@ -170,33 +162,5 @@ resource "azuredevops_serviceendpoint_azurerm" "arm_sc" {
   credentials {
     serviceprincipalid = azurerm_user_assigned_identity.this_uaid.client_id
   }
-}
-
-resource "azurerm_kubernetes_cluster" "this_aks_cluster" {
-  name                = var.aks_name
-  location            = var.location
-  resource_group_name = azurerm_resource_group.this_resource_group.name
-  dns_prefix          = "DSB"
-
-
-  default_node_pool {
-    name       = "default"
-    node_count = 1
-    vm_size    = "Standard_A2_v2"
-  }
-
-  identity {
-    type         = "UserAssigned"
-    identity_ids = [azurerm_user_assigned_identity.this_uaid.id]
-  }
-
-  tags = {
-    Environment = "Production"
-  }
-  depends_on = [
-    azurerm_role_assignment.uaid_contributor,
-    azurerm_role_assignment.acr_pull,
-    azurerm_role_assignment.acr_push
-  ]
 }
 
