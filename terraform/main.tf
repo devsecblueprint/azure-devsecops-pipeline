@@ -96,10 +96,10 @@ resource "azuredevops_serviceendpoint_azurecr" "acr_registry_endpoint" {
   resource_group                         = var.resource_group_name
   service_endpoint_name                  = "AzureCR Endpoint"
   service_endpoint_authentication_scheme = "WorkloadIdentityFederation"
-  azurecr_spn_tenantid                   = "233318cd-0fbb-44eb-9437-4e2681adf87e"
+  azurecr_spn_tenantid                   = var.TFC_AZ_TENANT_ID
   azurecr_name                           = var.acr_name
-  azurecr_subscription_id                = "9e3af6ab-6e22-4d23-a3ef-a6e883abe616"
-  azurecr_subscription_name              = "DSB"
+  azurecr_subscription_id                = var.TFC_AZ_SUBSCRIPTION_ID
+  azurecr_subscription_name              = var.TFC_AZ_SUBSCRIPTION_NAME
 
   credentials {
     serviceprincipalid = azurerm_user_assigned_identity.this_uaid.client_id
